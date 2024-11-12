@@ -27,6 +27,7 @@ DJANGO_APPS = [
 THIRD_PART_APPS = [
     "django_filters",
     "drf_spectacular",
+    "payments",
     "rest_framework",
     "rest_framework_simplejwt",
 ]
@@ -34,6 +35,7 @@ THIRD_PART_APPS = [
 LOCAL_APPS = [
     "apps.core",
     "apps.accounts",
+    "apps.payment",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PART_APPS + LOCAL_APPS
@@ -97,6 +99,9 @@ SIMPLE_JWT = {
         minutes=int(environ.get("REFRESH_TOKEN_LIFETIME", default=10))
     ),
 }
+
+# PAYMENTS
+PAYMENT_HOST = environ.get("PAYMENT_HOST", default="http://localhost:8000")
 
 LANGUAGE_CODE = "pt-br"
 
