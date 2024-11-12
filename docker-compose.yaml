@@ -1,0 +1,43 @@
+services:
+  payment_db:
+    container_name: payment_db
+    image: postgres:13.0-alpine
+    volumes:
+      - cra_data:/var/lib/postgresql/data/
+    env_file:
+      - .db.env
+    ports:
+      - "${DB_CONTAINER_PORT}:${DB_PORT}"
+    restart: always
+    networks:
+      payment_network:
+    hostname: payment_db
+
+  payment_django:
+    container_name: payment_django
+    build:
+      context: .
+      args:
+        - REQUIREMENTS_PATH=${REQUIREMENTS_PATH}
+    command: ${BACKEND_COMMAND}
+    volumes:
+      - .:/home/app/
+      - ${MEDIA_ROOT}:/home/app/media
+    ports:
+      - "${BACKEND_CONTAINER_PORT}:${BACKEND_PORT}"
+    env_file:
+      - .env
+    depends_on:
+      - payment_db
+    restart: always
+    networks:
+      payment_network:
+    hostname: payment_django
+
+volumes:
+  cra_data:
+
+networks:
+  payment_network:
+    driver: bridge
+# docker network create --gateway 10.2.0.1 --subnet 10.2.0.0/16 payment_network
