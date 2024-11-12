@@ -18,7 +18,7 @@ class UserReadSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        exclude = ["password", "groups", "user_permissions"]
+        exclude = ["password"]
         extra_kwargs = {
             "id": {"read_only": True},
             "created_at": {"read_only": True},
@@ -34,7 +34,7 @@ class UserDetailSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        exclude = ["password", "groups", "user_permissions"]
+        exclude = ["password"]
 
     def update(self, instance, validated_data):
         address_data = validated_data.pop("address", None)
@@ -55,7 +55,7 @@ class UserCreateSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        exclude = ["groups", "user_permissions"]
+        fields = "__all__"
         extra_kwargs = {
             "id": {"read_only": True},
             "created_at": {"read_only": True},
@@ -79,7 +79,7 @@ class UserUpdateSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        exclude = ["password", "groups", "user_permissions"]
+        exclude = ["password"]
         extra_kwargs = {
             "id": {"read_only": True},
             "created_at": {"read_only": True},

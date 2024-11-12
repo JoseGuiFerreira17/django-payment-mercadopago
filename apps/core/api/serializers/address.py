@@ -8,8 +8,6 @@ class AddressSerializer(ModelSerializer):
         model = Address
         fields = [
             "id",
-            "created_by",
-            "modified_by",
             "created_at",
             "modified_at",
             "street",
@@ -22,8 +20,6 @@ class AddressSerializer(ModelSerializer):
         ]
         extra_kwargs = {
             "id": {"read_only": True},
-            "created_by": {"read_only": True},
-            "modified_by": {"read_only": True},
             "created_at": {"read_only": True},
             "modified_at": {"read_only": True},
         }

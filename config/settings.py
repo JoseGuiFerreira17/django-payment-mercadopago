@@ -70,6 +70,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+CACHE_TTL = 60 * 1
+
 DATABASES = {
     "default": {
         "ENGINE": environ.get("DB_ENGINE", default="django.db.backends.postgresql"),
@@ -91,6 +93,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# REST_FRAMEWORK
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        [
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
+            "rest_framework.authentication.SessionAuthentication",
+        ]
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "ORDERING_PARAM": "order_by",
+}
+
+# SIMPLE_JWT
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
         minutes=int(environ.get("ACCESS_TOKEN_LIFETIME", default=5))
@@ -98,10 +115,19 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(
         minutes=int(environ.get("REFRESH_TOKEN_LIFETIME", default=10))
     ),
+    "TOKEN_OBTAIN_SERIALIZER": "apps.accounts.api.serializers.TokenObtainPairSerializer",
 }
 
 # PAYMENTS
 PAYMENT_HOST = environ.get("PAYMENT_HOST", default="http://localhost:8000")
+
+# SPECTACULAR
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Doc. Django Payment API",
+    "DESCRIPTION": "Documentação da API Django Payment",
+    "VERSION": "0.0.1",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
 
 LANGUAGE_CODE = "pt-br"
 
