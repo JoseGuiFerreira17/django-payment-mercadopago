@@ -6,3 +6,6 @@ from apps.payment.models import PaymentMethod
 class PaymentMethodViewSet(BaseModelViewSet):
     model = PaymentMethod
     serializer_class = PaymentMethodSerializer
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)

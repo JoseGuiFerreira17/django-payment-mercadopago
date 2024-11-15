@@ -15,14 +15,8 @@ class Payment(BaseModelMixin):
         on_delete=CASCADE,
         related_name="payments",
     )
-    preference_id = CharField(
-        verbose_name="id preferência", max_length=255, blank=True, null=True
-    )
-    description = CharField(verbose_name="descrição", max_length=255)
-    total = DecimalField(verbose_name="total", max_digits=10, decimal_places=2)
-    currency = CharField(verbose_name="moeda", max_length=10, default="BRL")
-    quantity = IntegerField(verbose_name="quantidade", default=1)
-    status = CharField(verbose_name="status", max_length=50, blank=True, null=True)
-
-    def __str__(self):
-        return f"Payment {self.preference_id} - {self.description}"
+    amount = DecimalField(verbose_name="valor", max_digits=10, decimal_places=2)
+    installments = IntegerField(verbose_name="parcelas", default=1)
+    description = CharField(verbose_name="descrição", max_length=255, null=True, blank=True)
+    transaction_id = CharField(verbose_name="ID da transação", max_length=255, blank=True, null=True)
+    status = CharField(verbose_name="status", max_length=255, blank=True, null=True)

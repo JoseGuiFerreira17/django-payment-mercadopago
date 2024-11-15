@@ -22,14 +22,20 @@ class PaymentMethod(BaseModelMixin):
         max_length=50,
         choices=PaymentMethodChoices.choices,
     )
-    last_four_digits = CharField(
-        verbose_name="Últimos quatro dígitos", max_length=4, blank=True, null=True
-    )
-    expiration_date = DateField(
-        verbose_name="Data de vencimento", blank=True, null=True
-    )
-    provider = CharField(verbose_name="Provedor", max_length=100, blank=True, null=True)
+    card_holder_name = CharField(verbose_name="Nome do titular", max_length=100, blank=True, null=True)
+    card_number = CharField(verbose_name="Últimos quatro dígitos", max_length=150, blank=True, null=True)
+    last_four_digits = CharField(verbose_name="Últimos quatro dígitos", max_length=4, blank=True, null=True)
+    expiration_month = CharField(verbose_name="Mês de expiração", max_length=2, blank=True, null=True)
+    expiration_year = CharField(verbose_name="Ano de expiração", max_length=4, blank=True, null=True)
+    security_code = CharField(verbose_name="Código de segurança", max_length=4, blank=True, null=True)
+    issuer = CharField(verbose_name="Bandeira", max_length=50, blank=True, null=True)
     is_active = BooleanField(verbose_name="Ativo", default=True)
+    is_default = BooleanField(verbose_name="Padrão", default=False)
+
+    def save(self, *args, **kwargs):
+        if self.is_default:
+            PaymentMethod.objects.filter(user=self.user, is_default=True).update(is_default=False)
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.get_payment_type_display()} - {self.user.username}"
+        return f"{self.get_payment_type_display()} - {self.user.name}"

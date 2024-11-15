@@ -83,6 +83,8 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "accounts.User"
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -109,17 +111,29 @@ REST_FRAMEWORK = {
 
 # SIMPLE_JWT
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=int(environ.get("ACCESS_TOKEN_LIFETIME", default=5))
-    ),
-    "REFRESH_TOKEN_LIFETIME": timedelta(
-        minutes=int(environ.get("REFRESH_TOKEN_LIFETIME", default=10))
-    ),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(environ.get("ACCESS_TOKEN_LIFETIME", default=5))),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=int(environ.get("REFRESH_TOKEN_LIFETIME", default=10))),
     "TOKEN_OBTAIN_SERIALIZER": "apps.accounts.api.serializers.TokenObtainPairSerializer",
 }
 
 # PAYMENTS
+MERCADO_PAGO_PUBLIC_KEY = environ.get("PAYMENT_PUBLIC_KEY", default="")
+MERCADO_PAGO_ACCESS_TOKEN = environ.get("PAYMENT_ACCESS_TOKEN", default="")
+
 PAYMENT_HOST = environ.get("PAYMENT_HOST", default="http://localhost:8000")
+
+PAYMENT_MODEL = "payment.Payment"
+
+PAYMENT_VARIANTS = {
+    "mercadopago": (
+        "payments.mercadopago.MercadoPagoProvider",
+        {
+            "access_token": environ.get("PAYMENT_ACCESS_TOKEN", default=""),
+            "public_key": environ.get("PAYMENT_PUBLIC_KEY", default=""),
+            "sandbox": DEBUG,
+        },
+    ),
+}
 
 # SPECTACULAR
 SPECTACULAR_SETTINGS = {
