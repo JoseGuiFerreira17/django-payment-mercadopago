@@ -31,6 +31,22 @@ class MercadoPagoProvider:
             raise e
         return response
 
+    def create_subscription(self, user, plan, payment_method):
+        payload = {
+            "preapproval_plan_id": plan.external_id,
+            "payer_email": user.email,
+            "card_token_id": payment_method.card_token,
+            "auto_recurring": {
+                "frequency": plan.billing_cycle,
+                "frequency_type": "months",
+                "transaction_amount": float(plan.price),
+                "currency_id": "BRL",
+            },
+            "back_url": "https://example.com/subscription-success",
+        }
+        response = self._make_request("POST", "/v1/preapproval", data=payload)
+        return response
+
     def generate_card_token(self, card_data):
         try:
             token_response = self.sdk.card_token().create(card_data)

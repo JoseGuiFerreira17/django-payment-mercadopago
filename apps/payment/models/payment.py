@@ -6,6 +6,7 @@ from django.db.models import (
     IntegerField,
 )
 from apps.core.models import BaseModelMixin
+from apps.payment.choices import PaymentStatus
 
 
 class Payment(BaseModelMixin):
@@ -19,4 +20,18 @@ class Payment(BaseModelMixin):
     installments = IntegerField(verbose_name="parcelas", default=1)
     description = CharField(verbose_name="descrição", max_length=255, null=True, blank=True)
     transaction_id = CharField(verbose_name="ID da transação", max_length=255, blank=True, null=True)
-    status = CharField(verbose_name="status", max_length=255, blank=True, null=True)
+    status = CharField(
+        verbose_name="status",
+        max_length=255,
+        choices=PaymentStatus.choices,
+        default=PaymentStatus.WAITING,
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = "pagamento"
+        verbose_name_plural = "pagamentos"
+
+    def __str__(self):
+        return f"{self.user} - {self.amount}"

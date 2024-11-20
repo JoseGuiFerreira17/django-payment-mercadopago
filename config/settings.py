@@ -27,7 +27,6 @@ DJANGO_APPS = [
 THIRD_PART_APPS = [
     "django_filters",
     "drf_spectacular",
-    "payments",
     "rest_framework",
     "rest_framework_simplejwt",
 ]
@@ -36,6 +35,7 @@ LOCAL_APPS = [
     "apps.core",
     "apps.accounts",
     "apps.payment",
+    "apps.plans",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PART_APPS + LOCAL_APPS
@@ -119,21 +119,6 @@ SIMPLE_JWT = {
 # PAYMENTS
 MERCADO_PAGO_PUBLIC_KEY = environ.get("PAYMENT_PUBLIC_KEY", default="")
 MERCADO_PAGO_ACCESS_TOKEN = environ.get("PAYMENT_ACCESS_TOKEN", default="")
-
-PAYMENT_HOST = environ.get("PAYMENT_HOST", default="http://localhost:8000")
-
-PAYMENT_MODEL = "payment.Payment"
-
-PAYMENT_VARIANTS = {
-    "mercadopago": (
-        "payments.mercadopago.MercadoPagoProvider",
-        {
-            "access_token": environ.get("PAYMENT_ACCESS_TOKEN", default=""),
-            "public_key": environ.get("PAYMENT_PUBLIC_KEY", default=""),
-            "sandbox": DEBUG,
-        },
-    ),
-}
 
 # SPECTACULAR
 SPECTACULAR_SETTINGS = {

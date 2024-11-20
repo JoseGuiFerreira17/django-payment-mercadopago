@@ -22,17 +22,10 @@ class PaymentViewSet(BaseModelViewSet):
             payment_method = PaymentMethod.objects.filter(user=request.user, is_default=True, is_active=True).first()
 
         if not payment_method:
-            return Response(
-                {"error": "Método de pagamento não encontrado"},
-                status=HTTP_400_BAD_REQUEST,
-            )
+            return Response({"error": "Método de pagamento não encontrado"}, status=HTTP_400_BAD_REQUEST)
 
         service = MercadoPagoProvider()
-        payment_response = service.process_payment(
-            user,
-            request.data,
-            payment_method,
-        )
+        payment_response = service.process_payment(user, request.data, payment_method)
 
         if payment_response["status"] == 201:
             payment_data = {

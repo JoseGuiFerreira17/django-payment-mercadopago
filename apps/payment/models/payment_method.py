@@ -32,6 +32,10 @@ class PaymentMethod(BaseModelMixin):
     is_active = BooleanField(verbose_name="Ativo", default=True)
     is_default = BooleanField(verbose_name="Padrão", default=False)
 
+    class Meta:
+        verbose_name = "Método de pagamento"
+        verbose_name_plural = "Métodos de pagamento"
+
     def save(self, *args, **kwargs):
         if self.is_default:
             PaymentMethod.objects.filter(user=self.user, is_default=True).update(is_default=False)
