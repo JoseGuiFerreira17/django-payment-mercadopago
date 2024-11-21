@@ -2,6 +2,9 @@ prebuild:
 	cp example.env .env
 	cp example.db.env .db.env
 
+create_superuser:
+	docker compose exec payment_django python manage.py createsuperuser
+
 migrate:
 	docker compose exec payment_django python manage.py migrate
 

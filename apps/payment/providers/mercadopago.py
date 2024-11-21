@@ -6,7 +6,20 @@ from apps.accounts.models import User
 class MercadoPagoProvider:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.sdk = mercadopago.SDK(settings.MERCADO_PAGO_ACCESS_TOKEN)
+        self.access_token = settings.MERCADO_PAGO_ACCESS_TOKEN
+        self.sdk = mercadopago.SDK(self.access_token)
+        self.url = "https://api.mercadopago.com/v1"
+
+    def get_plans(self):
+        try:
+            response = self.sdk.plan().search()
+            if response["status"] == 200:
+                results = response.get("response").get("results", [])
+                return results
+            else:
+                raise Exception(f"Erro ao buscar planos: {response}")
+        except Exception as e:
+            raise Exception(f"Erro ao buscar planos: {e}")
 
     def process_payment(self, user, payment, payment_method):
         payment_data = {
@@ -44,7 +57,7 @@ class MercadoPagoProvider:
             },
             "back_url": "https://example.com/subscription-success",
         }
-        response = self._make_request("POST", "/v1/preapproval", data=payload)
+        response = self.sdk.subscription().create(payload)
         return response
 
     def generate_card_token(self, card_data):

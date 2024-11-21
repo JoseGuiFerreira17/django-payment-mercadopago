@@ -6,4 +6,5 @@ urlpatterns = [
     # API
     path("", include("apps.accounts.api.routers")),
     path("", include("apps.payment.api.routers")),
+    path("", include("apps.plans.api.routers")),
 ]
