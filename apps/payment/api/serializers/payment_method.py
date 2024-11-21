@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
 from apps.payment.models import PaymentMethod
-from apps.payment.providers.mercadopago import MercadoPagoProvider
+from apps.core.providers.mercadopago import MercadoPagoProvider
 
 
 class PaymentMethodSerializer(ModelSerializer):

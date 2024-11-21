@@ -1,5 +1,5 @@
 from django.contrib.admin import ModelAdmin
-from apps.payment.providers.mercadopago import MercadoPagoProvider
+from apps.core.providers.mercadopago import MercadoPagoProvider
 
 
 class PlanAdmin(ModelAdmin):

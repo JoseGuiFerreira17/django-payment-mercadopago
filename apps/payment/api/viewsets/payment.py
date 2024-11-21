@@ -3,7 +3,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 from apps.core.api.viewsets import BaseModelViewSet
 from apps.payment.api.serializers import PaymentSerializer
 from apps.payment.models import Payment, PaymentMethod
-from apps.payment.providers.mercadopago import MercadoPagoProvider
+from apps.core.providers.mercadopago import MercadoPagoProvider
 
 
 class PaymentViewSet(BaseModelViewSet):

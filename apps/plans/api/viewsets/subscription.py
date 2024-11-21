@@ -1,7 +1,7 @@
 from apps.core.api.viewsets import BaseModelViewSet
 from apps.plans.models import Subscription, Plan
 from apps.plans.api.serializers import SubscriptionSerializer
-from apps.payment.providers.mercadopago import MercadoPagoProvider
+from apps.core.providers.mercadopago import MercadoPagoProvider
 from apps.payment.models import PaymentMethod
 
 from rest_framework.response import Response
