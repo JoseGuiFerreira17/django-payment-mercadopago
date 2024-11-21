@@ -7,6 +7,7 @@ class Plan(BaseModelMixin):
     description = CharField(verbose_name="descrição", max_length=255, null=True, blank=True)
     price = DecimalField(verbose_name="preço", max_digits=10, decimal_places=2)
     billing_period = IntegerField(verbose_name="período de cobrança em meses", default=1)
+    external_id = CharField(verbose_name="id externo mercadopago", max_length=255, null=True, blank=True)
     is_active = BooleanField(verbose_name="ativo", default=True)
 
     class Meta:

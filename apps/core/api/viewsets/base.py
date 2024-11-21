@@ -59,10 +59,7 @@ class BaseGenericViewSet(GenericViewSet):
 
     def get_permissions(self):
         if self.action in self.action_permission_classes:
-            return [
-                permission()
-                for permission in self.action_permission_classes[self.action]
-            ]
+            return [permission() for permission in self.action_permission_classes[self.action]]
         return super().get_permissions()
 
     @property
