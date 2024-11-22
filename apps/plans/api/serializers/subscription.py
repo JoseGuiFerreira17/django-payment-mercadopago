@@ -8,3 +8,6 @@ class SubscriptionSerializer(ModelSerializer):
     class Meta:
         model = Subscription
         fields = "__all__"
+        extra_kwargs = {
+            "user": {"required": False},
+        }
