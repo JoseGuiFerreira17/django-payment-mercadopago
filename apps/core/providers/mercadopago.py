@@ -79,12 +79,22 @@ class MercadoPagoProvider:
         except Exception as e:
             raise Exception(f"Erro ao criar cliente: {e}")
 
+    def create_card(self, customer, card_token):
+        try:
+            response = self.sdk.card().create(customer, card_token)
+            if response["status"] == 201:
+                return response["response"]
+            else:
+                raise Exception(f"Erro ao criar cartão: {response}")
+        except Exception as e:
+            raise Exception(f"Erro ao criar cartão: {e}")
+
     def generate_card_token(self, card_data):
         try:
             token_response = self.sdk.card_token().create(card_data)
 
             if token_response["status"] == 201:
-                return token_response["response"]["id"]
+                return token_response["response"]
             else:
                 raise Exception(f"Erro ao gerar token: {token_response}")
         except Exception as e:

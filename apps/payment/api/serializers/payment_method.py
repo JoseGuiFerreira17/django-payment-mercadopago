@@ -31,12 +31,24 @@ class PaymentMethodSerializer(ModelSerializer):
         }
 
         service = MercadoPagoProvider()
-        token = service.generate_card_token(card_data)
+        response = service.generate_card_token(card_data)
 
-        if token:
+        if response and isinstance(response, dict) and "id" in response:
+            token = response.get("id")
             validated_data["card_number"] = token
             validated_data["last_four_digits"] = last_four_digits
             validated_data["user"] = self.context["request"].user
+
+            token_data = {
+                "token": token,
+            }
+
+            response = service.create_card(user.external_id, token_data)
+            if response and isinstance(response, dict) and "id" in response:
+                validated_data["external_id"] = response.get("id")
+            else:
+                raise ValidationError("Erro ao salvar o cartão.")
+
             return super().create(validated_data)
         else:
             raise ValidationError("Erro ao tokenizar o cartão.")

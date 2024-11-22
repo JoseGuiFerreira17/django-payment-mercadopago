@@ -29,6 +29,7 @@ class PaymentMethod(BaseModelMixin):
     expiration_year = CharField(verbose_name="Ano de expiração", max_length=4, blank=True, null=True)
     security_code = CharField(verbose_name="Código de segurança", max_length=4, blank=True, null=True)
     issuer = CharField(verbose_name="Bandeira", max_length=50, blank=True, null=True)
+    external_id = CharField(verbose_name="ID externo mercadopago", max_length=150, blank=True, null=True)
     is_active = BooleanField(verbose_name="Ativo", default=True)
     is_default = BooleanField(verbose_name="Padrão", default=False)
 
