@@ -24,7 +24,7 @@ class PaymentMethodSerializer(ModelSerializer):
             "cardholder": {
                 "name": validated_data.get("card_holder_name"),
                 "identification": {
-                    "type": "CPF",
+                    "type": "CPF" if len(user.document) == 11 else "CNPJ",
                     "number": user.document,
                 },
             },
@@ -43,7 +43,11 @@ class PaymentMethodSerializer(ModelSerializer):
                 "token": token,
             }
 
+            if not user.external_id:
+                raise ValidationError("Usuário não possui conta vinculada ao Mercado Pago.")
+
             response = service.create_card(user.external_id, token_data)
+
             if response and isinstance(response, dict) and "id" in response:
                 validated_data["external_id"] = response.get("id")
             else:

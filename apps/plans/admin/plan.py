@@ -26,18 +26,22 @@ class PlanAdmin(ModelAdmin):
 
     def get_mercadopago_plans(self, request, queryset):
         service = MercadoPagoProvider()
-        response = service.get_plans()
-        if response:
-            self.model.objects.all().delete()
-            for plan in response:
-                self.model.objects.create(
-                    name=plan.get("reason"),
-                    price=plan.get("auto_recurring").get("transaction_amount"),
-                    billing_period=plan.get("auto_recurring").get("frequency"),
-                    external_id=plan.get("id"),
-                    is_active=True if plan.get("status") == "active" else False,
-                )
-        else:
-            self.message_user(request, "Nenhum plano encontrado no Mercado Pago", "error")
+        try:
+            response = service.get_plans()
+            if response:
+                self.model.objects.all().delete()
+                for plan in response:
+                    auto_recurring = plan.get("auto_recurring", {})
+                    self.model.objects.create(
+                        name=plan.get("reason"),
+                        price=auto_recurring.get("transaction_amount", 0),
+                        billing_period=auto_recurring.get("frequency", 1),
+                        external_id=plan.get("id"),
+                        is_active=True if plan.get("status") == "active" else False,
+                    )
+            else:
+                self.message_user(request, "Nenhum plano encontrado no Mercado Pago", "error")
+        except Exception as e:
+            self.message_user(request, f"Erro ao buscar planos: {e}", "error")
 
     get_mercadopago_plans.short_description = "Obter planos do Mercado Pago"
