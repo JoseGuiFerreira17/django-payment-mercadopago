@@ -1,6 +1,6 @@
 import mercadopago
 from django.conf import settings
-from apps.accounts.models import User
+from datetime import datetime, timedelta
 
 
 class MercadoPagoProvider:
@@ -8,7 +8,6 @@ class MercadoPagoProvider:
         super().__init__(*args, **kwargs)
         self.access_token = settings.MERCADO_PAGO_ACCESS_TOKEN
         self.sdk = mercadopago.SDK(self.access_token)
-        self.url = "https://api.mercadopago.com/v1"
 
     def get_plans(self):
         try:
@@ -45,13 +44,23 @@ class MercadoPagoProvider:
         return response
 
     def create_subscription(self, user, plan, payment_method):
+        start_date = datetime.utcnow()
+        end_date = start_date + timedelta(days=30)
+        if plan.billing_period > 1:
+            end_date = start_date + timedelta(days=30 * plan.billing_period)
+
+        start_date_iso = start_date.isoformat() + "Z"
+        end_date_iso = end_date.isoformat() + "Z"
+
         payload = {
             "preapproval_plan_id": plan.external_id,
             "payer_email": user.email,
-            "card_token_id": payment_method.card_token,
+            "card_token_id": payment_method.card_number,
             "auto_recurring": {
-                "frequency": plan.billing_cycle,
+                "frequency": plan.billing_period,
                 "frequency_type": "months",
+                "start_date": start_date_iso,
+                "end_date": end_date_iso,
                 "transaction_amount": float(plan.price),
                 "currency_id": "BRL",
             },
@@ -59,6 +68,16 @@ class MercadoPagoProvider:
         }
         response = self.sdk.subscription().create(payload)
         return response
+
+    def create_customer(self, customer_data):
+        try:
+            response = self.sdk.customer().create(customer_data)
+            if response["status"] == 201:
+                return response["response"]
+            else:
+                raise Exception(f"Erro ao criar cliente: {response}")
+        except Exception as e:
+            raise Exception(f"Erro ao criar cliente: {e}")
 
     def generate_card_token(self, card_data):
         try:

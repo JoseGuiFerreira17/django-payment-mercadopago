@@ -26,6 +26,7 @@ class User(AbstractBaseUser, BaseModelMixin, PermissionsMixin):
         related_name="user_address",
     )
     birth_date = DateField(verbose_name="data de nascimento", blank=True, null=True)
+    external_id = CharField(verbose_name="id externo mercadopago", max_length=255, blank=True, null=True)
     # PERMISSIONAMENTO
     is_staff = BooleanField(verbose_name="Pode acessar o painel", default=True)
     is_active = BooleanField(verbose_name="ativo", default=True)
