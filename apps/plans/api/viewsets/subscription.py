@@ -20,6 +20,7 @@ class SubscriptionViewSet(BaseModelViewSet):
         plan_id = request.data.get("plan")
         plan = Plan.objects.get(id=plan_id, is_active=True)
         payment_method_id = request.data.get("payment_method_id")
+        payment_method = None
 
         if not plan:
             return Response({"error": "Plano de assinatura não encontrado"}, status=HTTP_400_BAD_REQUEST)
