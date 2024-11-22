@@ -22,6 +22,8 @@ class SubscriptionViewSet(BaseModelViewSet):
         payment_method_id = request.data.get("payment_method_id")
         payment_method = None
 
+        service = MercadoPagoProvider()
+
         if not plan:
             return Response({"error": "Plano de assinatura não encontrado"}, status=HTTP_400_BAD_REQUEST)
 
@@ -31,9 +33,9 @@ class SubscriptionViewSet(BaseModelViewSet):
             payment_method = PaymentMethod.objects.filter(user=user, is_default=True, is_active=True).first()
 
         if not payment_method:
-            return Response({"error": "Método de pagamento não encontrado"}, status=HTTP_400_BAD_REQUEST)
+            response = service.create_payment_link(plan)
+            return Response({"payment_link": response})
 
-        service = MercadoPagoProvider()
         subscription_response = service.create_subscription(user, plan, payment_method)
 
         if subscription_response.get("status") == 201:

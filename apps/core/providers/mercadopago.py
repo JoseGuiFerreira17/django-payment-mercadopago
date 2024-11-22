@@ -20,6 +20,35 @@ class MercadoPagoProvider:
         except Exception as e:
             raise Exception(f"Erro ao buscar planos: {e}")
 
+    def create_payment_link(self, plan):
+        preference_data = {
+            "items": [
+                {
+                    "id": plan.external_id,
+                    "title": plan.name,
+                    "quantity": 1,
+                    "currency_id": "BRL",
+                    "unit_price": float(plan.price),
+                }
+            ],
+            "back_urls": {
+                "success": "https://example.com/success",
+                "failure": "https://example.com/failure",
+                "pending": "https://example.com/pending",
+            },
+            "auto_return": "approved",
+        }
+
+        try:
+            response = self.sdk.preference().create(preference_data)
+            if response["status"] == 201:
+                return response["response"]["init_point"]
+            else:
+                raise Exception(f"Erro ao criar link de pagamento: {response}")
+
+        except Exception as e:
+            raise Exception(f"Erro ao criar link de pagamento: {e}")
+
     def process_payment(self, user, payment, payment_method):
         payment_data = {
             "transaction_amount": float(payment.get("amount")),
