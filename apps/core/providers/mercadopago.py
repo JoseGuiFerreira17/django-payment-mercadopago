@@ -32,9 +32,9 @@ class MercadoPagoProvider:
                 }
             ],
             "back_urls": {
-                "success": "https://example.com/success",
-                "failure": "https://example.com/failure",
-                "pending": "https://example.com/pending",
+                "success": f"{settings.FRONTEND_URL}/payment-link/success",
+                "failure": f"{settings.FRONTEND_URL}/payment-link/failure",
+                "pending": f"{settings.FRONTEND_URL}/payment-link/pending",
             },
             "auto_return": "approved",
         }
@@ -93,7 +93,7 @@ class MercadoPagoProvider:
                 "transaction_amount": float(plan.price),
                 "currency_id": "BRL",
             },
-            "back_url": "https://example.com/subscription-success",
+            "back_url": f"{settings.FRONTEND_URL}/subscription/success",
         }
         response = self.sdk.subscription().create(payload)
         return response
